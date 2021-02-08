@@ -13,5 +13,9 @@ Solved “fatal: refusing to merge unrelated histories” Git error - Cause: I h
 Started to Learn JavaScript
 
 #09 Feb 4.13AM
+<<<<<<< HEAD
 Pig Game JavaScript. Every function is working perfectly. 
 
+=======
+Pig Game Language: JavaScript. Every function is working perfectly. 
+>>>>>>> 7dc04a0fdc131074d16867613b4796f6de823428
