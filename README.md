@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Things-I-have-learned
 
 # 2021
@@ -12,3 +12,6 @@ Solved “fatal: refusing to merge unrelated histories” Git error - Cause: I h
 
 #01 Feb 7PM
 Started to Learn JavaScript
+
+#09 Feb 4.13AM
+Pig Game JavaScript. Every function is working perfectly. 
