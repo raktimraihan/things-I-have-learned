@@ -24,6 +24,7 @@ rollDiceButton.addEventListener("click", rollGame);
 holdButton.addEventListener("click", holdGame);
 
 function init(){
+    score = [0,0];
     totalScorePlayer01 = 0;
     totalScorePlayer02 = 0;
     currentScorePlayer01 = 0;
@@ -120,11 +121,11 @@ function holdGame(){
 function checkWinner(){
     if(score[0]>= endPoint){
         window.alert("Congratulations! Player 1 is the Winner. Good Luck on next phase.");
-        newGame();
+        init();
         
     }
     if(score[1]>= endPoint){
         window.alert("Congratulations! Player 2 is the Winner. Good Luck on next phase.");
-        newGame();
+        init();
     }
 }
