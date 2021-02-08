@@ -9,6 +9,7 @@ This repository contains the things I am learning as well as has already learned
 #31st January
 Solved “fatal: refusing to merge unrelated histories” Git error - Cause: I haven't cloned my repo first causing two unrelated project to merge. 
 
+# Feb
 #01 Feb 7PM
 Started to Learn JavaScript
 
