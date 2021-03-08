@@ -1,192 +1,155 @@
-/*eslint-env browser*/
-/* eslint no-console: "off" */
-var dateObj = new Date();
 
-//get current month and year
-var monthAndYear = (function(){
-    var year = dateObj.getFullYear().toString();
-    var month = dateObj.getMonth();
-    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    var currentMonth = months[month];
-    return{
-        getYear: function(){
-            return {
-                yearNow: year,
-                monthName: currentMonth
-            };   
-        
-        }
-        
+//get date value
+var dateGlobalObj = new Date();
+var monthArray = ['January','February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+var date_now = (function(){
+    var yearCurr = dateGlobalObj.getFullYear();
+    var monthCurrNumber = dateGlobalObj.getMonth();
+    var currMonthName = monthArray[monthCurrNumber];
+    return {
+        stringValue: "hello",
+        year: yearCurr,
+        currMonthNameRe: currMonthName
     };
 })();
 
-//IFEE
-
-//budget controller
-var budgetController= (function(){
-    var expense = function(type, description, value, id){
-        this.type = type;
-        this.description = description;
-        this.value = value;
-        this.id = id;
-        
-    };
-    
-    var income = function(type, description, value, id){
-        this.type = type;
-        this.description = description;
-        this.value = value;
-        this.id = id;
-        
-    };
-    
-    var allAmountCollection = {
-        totalBudget : 0,
-        allIncome: [],
-        allExpense: [],
-        percentage: 0,
-        
-    };
+//document string collection
+var DOMStringsCollection = (function(){
     
     return{
-        addItem: function(){
-            var input = UIController.getinput();
-            var type = input.type;
-            var description = input.description;
-            var value = input.value;
-            var newItem, ID
-            
-            if(type == 'exp'){
-                console.log('Expense Processing');
-                ID = allAmountCollection.allExpense.pop();
-                if(ID==null) {
-                    ID = 'E-0'; 
-                }
-                else{
-                    var IDCharArray = ID.id.split('-');
-                    IDCharArray[1] +=1;
-                    ID = IDCharArray[0].concat(IDCharArray[1]);
-                }
-                newItem = new expense(type, description, value, ID);
-                allAmountCollection.allExpense.push(newItem);
-            }
-            
-            else{
-                console.log('Income Processing');
-                ID = allAmountCollection.allIncome.pop();
-                if(ID==null) {
-                    ID = 'I-0'; 
-                }
-                else{
-                    IDCharArray = ID.id.split('-');
-                    var IDInt = parseInt(IDCharArray[1])+1;
-                    ID = IDCharArray[0].concat(IDCharArray[1]);
-                }
-                newItem = new income(type, description, value, ID);
-                allAmountCollection.allIncome.push(newItem);
-            }
-        },
-        
-        allIncomeReturn: function(){
-            return {
-                allIncomeArray: allAmountCollection.allIncome
-            };
-        },
-        
-        allExpenseReturn: function(){
-            return {
-                allExpenseArray : allAmountCollection.allExpense
-            };
-        }
-    };
-    
-    
-    
-    
-})();
-
-//ui controller
-var UIController= (function(){
-    var DOMStrings = {
-        input : '.add__type',
-        addDescription: '.add__description',
-        addValue: '.add__value',
-        inputButton: '.add__btn',
-        totalAmountNav: ".budget__title--month",
-        budgetValue: ".budget__value",
-        budgetIncomeValue: ".budget__income--value",
-        budgetExpensesValue: ".budget__expenses--value",
+        monthPlaceHolder: ".budget__title--month",
+        budgetValueUI: ".budget__value",
+        budgetIncomeValueUI: ".budget__income--value",
         budgetIncomePercentage: ".budget__income--percentage",
-        budgetExpensePercentage: ".budget__expenses--percentage"
+        budgetExpenseValue: ".budget__expenses--value",
+        budgetExpensePercentahe: ".budget__expenses--percentage",
+        typeExpenseOrIncome: ".add__type",
+        descriptionText: ".add__description",
+        valueUI: ".add__value",
+        buttonUI: ".add__btn"
     };
-    
-    //display month on nav bar
-    
-    
-    return{
-        getinput: function(){
-            
-            return{
-                type : document.querySelector(DOMStrings.input).value, //will be either inc or expenses
-                description : document.querySelector(DOMStrings.addDescription).value,
-                value : document.querySelector(DOMStrings.addValue).value
-            };
-        },
-        
-        getDOMStrings: function(){
-            return DOMStrings;
-        },
-        
-        init: function(){
-            document.querySelector(DOMStrings.totalAmountNav).textContent = monthAndYear.getYear().monthName+', '+ monthAndYear.getYear().yearNow;
-            document.querySelector(DOMStrings.budgetValue).textContent = "0"; 
-            document.querySelector(DOMStrings.budgetIncomeValue).textContent = "0";
-            document.querySelector(DOMStrings.budgetExpensesValue).textContent = "0";
-            document.querySelector(DOMStrings.budgetExpensePercentage).textContent = "";
-            document.querySelector(DOMStrings.budgetIncomePercentage).textContent = "";
-        }
-        
-    };
-    
 })();
 
-//global app controler
-var controller = (function(budgetCtrl, UICtrl) {
+
+//insert data to UI
+var UIController = (function(){
+    var DOMString = DOMStringsCollection;
     
-        var setupEventListener = function(){
-            var DOM = UIController.getDOMStrings();
+    //initialization value to UI
+    var init = function(){
+        document.querySelector(DOMString.monthPlaceHolder).textContent = date_now.currMonthNameRe+", "+date_now.year;
+        document.querySelector(DOMString.budgetValueUI).textContent = 0;
+        document.querySelector(DOMString.budgetIncomeValueUI).textContent = 0;
+        document.querySelector(DOMString.budgetIncomePercentage).textContent = "0%";
+        document.querySelector(DOMString.budgetExpenseValue).textContent = "0";
+        document.querySelector(DOMString.budgetExpensePercentahe).textContent = "0%"
+    };
 
-            document.querySelector(DOM.inputButton).addEventListener('click', function(){
-                //console.log('button was clicked');
-                controllAtItemFunction();
-
-            }); //button
-
-            document.addEventListener('keypress', function(event){
-                if(event.keyCode==13 || event.which == 13){
-                    console.log("Enter was pressed.");
-                    controllAtItemFunction();
-                    budgetCtrl.addItem();
-                }
-
-            });
-
-
-            var controllAtItemFunction = function(){
-                var input = UICtrl.getinput();
-                budgetCtrl.addItem();
-            };
-            
-            
+    return{
+        initialization: init(),
         
-        };
-    
-        return{
-            eventListener: setupEventListener()
-        };
-    
-                  
-})(budgetController, UIController);
+    };
+})();
 
-UIController.init();
+var data = (function(){
+
+    var Expense = function(expenseType, description, value, id){
+        this.id = id;
+        this.expenseType = expenseType;
+        this.description = description;
+        this.value = value;
+        this.percentage = -1;
+    };
+
+    var record = {
+        allitems: {
+            EXP: [],
+            INC: []
+        },
+
+        totalExpense: 0,
+        totalIncome: 0,
+        budget: 0,
+        lastID: -1,
+        percentage: -1
+    };
+
+    return{
+        addItem: function(expenseType, description, value){
+            var ID;
+
+            if(record.lastID === -1){
+                ID = 0;
+            } else{
+                ID = record.lastID+1;
+                lastID = ID; //start from array last element
+            } 
+
+            var newItem = new Expense(expenseType, description, value, ID);
+            console.log(expenseType);
+            record.allitems[expenseType].push(newItem);
+
+            console.log(newItem);
+            return newItem;
+        },
+
+        viewItem: function(){
+            
+        }
+    };
+
+
+
+})();
+
+//docu
+
+//button onclick event 
+ var eventListenerONClickSubmit = document.querySelector(DOMStringsCollection.buttonUI).addEventListener("click",function(){
+    console.log("click"); 
+    sequenceOfOperationOnSubmit();
+ });
+
+ //onPressEnterEvent
+ var eventListenerOnClickEnter = document.addEventListener("keypress", function(event){
+    if(event.keyCode === 13){
+        console.log("Enter");
+        sequenceOfOperationOnSubmit();
+    } 
+    
+ });
+
+ //pressing Enter
+var valueCollectFromUI = function(){
+    var newItem;
+    var expenseType = (document.querySelector(DOMStringsCollection.typeExpenseOrIncome).value).toUpperCase();
+    var description = document.querySelector(DOMStringsCollection.descriptionText).value;
+    var value =  document.querySelector(DOMStringsCollection.valueUI).value;
+    console.log(expenseType+description+value);
+    
+    return{
+        getInput: function(){
+
+            return{
+                type: expenseType,
+                descripRe: description,
+                valueRe: value
+            };
+        }
+    };
+};
+
+
+var sequenceOfOperationOnSubmit = function(){
+    var valueCollectionObj = valueCollectFromUI();
+    var value = valueCollectionObj.getInput().valueRe; 
+    var description = valueCollectionObj.getInput().descripRe;
+    var newItem;
+
+    if(description!=="" && !isNaN(value) && value > 0){
+        newItem = data.addItem(valueCollectionObj.getInput().type, description, value);
+    }
+};
+
 
