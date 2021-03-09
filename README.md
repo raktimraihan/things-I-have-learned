@@ -15,3 +15,8 @@ Started to Learn JavaScript
 
 #09 Feb 4.13AM
 Pig Game JavaScript. Every function is working perfectly. 
+
+# March
+
+#10 Mar 3.45AM
+Budget App is working perfectly except when user deletes all of the options or child tabs percentage in total_income and total_expense becomes NAN. If anyone wants to fork it, it for you to fix. :)
