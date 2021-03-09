@@ -29,7 +29,8 @@ var DOMStringsCollection = (function(){
         valueUI: ".add__value",
         buttonUI: ".add__btn",
         incomeContainer: ".income__list",
-        expenseContainer: ".expenses__list"
+        expenseContainer: ".expenses__list", 
+        container: ".container"
     };
 })();
 
@@ -71,7 +72,10 @@ var data = (function(){
             EXP: [],
             INC: []
         },
-
+        idIndexList:{
+            EXP: [],
+            INC: []
+        },
         totalExpense: 0,
         totalIncome: 0,
         budget: 0,
@@ -87,6 +91,7 @@ var data = (function(){
 
             var newItem = new Expense(expenseType, description, value, ID);
             record.allitems[expenseType].push(newItem);
+            record.idIndexList[expenseType].push(ID);
 
             if("EXP".localeCompare(expenseType)===0){
                 var localtTotalExpense = 0;
@@ -124,7 +129,7 @@ var data = (function(){
 //docu
 
 //button onclick event 
- var eventListenerONClickSubmit = document.querySelector(DOMStringsCollection.buttonUI).addEventListener("click",function(){
+ var eventListenerONClickSubmit = document.querySelector(DOMStringsCollection.buttonUI).addEventListener("click",function(event){
     sequenceOfOperationOnSubmit();
  });
 
@@ -133,7 +138,20 @@ var data = (function(){
     if(event.keyCode === 13){
         sequenceOfOperationOnSubmit();
     } 
+ });
+
+ //delete item
+ var eventListenerOnDlt = document.querySelector(DOMStringsCollection.container).addEventListener("click", function(event){
+    var elementID;
     
+    document.querySelector(".item__delete--btn").addEventListener("click", function(event){
+        elementID = event.target.parentNode.parentNode.parentNode.id;
+        console.log("ID = "+elementID);
+        console.log(data.viewItem().idIndexList) 
+    });
+    
+    
+
  });
 
  //pressing Enter
@@ -160,7 +178,8 @@ var insertIntoExpenseORIncomeUI = function(newItem, type){
     var newHTML, element, html; 
     if(type === 'EXP'){
         element = DOMStringsCollection.expenseContainer;
-        html = '<div class="item clearfix" id="%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+        html = '<div class="item clearfix" id="%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">%21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+        html = html.replace('%21%', calPercentage(newItem.value, data.viewItem().totalExpense));
     }
     else if(type=='INC'){
         element  = DOMStringsCollection.incomeContainer;
@@ -175,6 +194,23 @@ var insertIntoExpenseORIncomeUI = function(newItem, type){
 
 };
 
+var calPercentage = function(value, totalValue){
+    return ((parseFloat(value).toFixed(2)/parseFloat(totalValue).toFixed(2))*100).toFixed(0)+"% ";
+};
+
+var clearField = function(){
+    var arr = document.querySelectorAll(DOMStringsCollection.valueUI+","+DOMStringsCollection.descriptionText);
+    //console.log(arr);
+    arr.forEach(e=>{
+        e.value = "";
+    });
+    document.querySelector(DOMStringsCollection.typeExpenseOrIncome).options.selectedIndex = 0;
+    arr[0],focus();
+};
+
+var deleteFromDataStructure = function(){
+    
+};
 
 var sequenceOfOperationOnSubmit = function(){
     var valueCollectionObj = valueCollectFromUI();
@@ -189,7 +225,10 @@ var sequenceOfOperationOnSubmit = function(){
     document.querySelector(DOMStringsCollection.budgetValueUI).textContent = data.viewItem().budget;
     document.querySelector(DOMStringsCollection.budgetIncomeValueUI).textContent = data.viewItem().totalIncome;
     document.querySelector(DOMStringsCollection.budgetExpenseValue).textContent = data.viewItem().totalExpense;
-    
+    document.querySelector(DOMStringsCollection.budgetIncomePercentage).textContent = calPercentage(data.viewItem().totalIncome, +data.viewItem().totalExpense+data.viewItem().totalIncome);
+    document.querySelector(DOMStringsCollection.budgetExpensePercentahe).textContent = calPercentage(data.viewItem().totalExpense, +data.viewItem().totalExpense+data.viewItem().totalIncome);
+    clearField();
+
 };
 
 
