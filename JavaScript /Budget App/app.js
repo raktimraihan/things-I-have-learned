@@ -142,15 +142,76 @@ var data = (function(){
 
  //delete item
  var eventListenerOnDlt = document.querySelector(DOMStringsCollection.container).addEventListener("click", function(event){
-    var elementID;
-    
-    document.querySelector(".item__delete--btn").addEventListener("click", function(event){
-        elementID = event.target.parentNode.parentNode.parentNode.id;
-        console.log("ID = "+elementID);
-        console.log(data.viewItem().idIndexList) 
-    });
-    
-    
+    var elementID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+    console.log(elementID);
+
+    if(data.viewItem().idIndexList['EXP'].indexOf(parseInt(elementID)) !== -1){
+        //get index
+        var i, index; 
+        for(i=0; i<(data.viewItem().allitems.EXP).length; i++){
+            if(parseInt(data.viewItem().allitems.EXP[i].id) == parseInt(elementID)){
+                index = i;
+            }
+        }
+        
+        //Update Budget and Excpense value in UI
+        console.log("Index = "+index);
+        var  dataAll = data.viewItem();
+        
+        dataAll.budget = parseFloat(dataAll.budget) + parseFloat(dataAll.allitems.EXP[index].value);
+        dataAll.totalExpense = parseFloat(dataAll.totalExpense) - parseFloat(dataAll.allitems.EXP[index].value);
+
+        //delete data from array
+        deleteFunction(dataAll.idIndexList.EXP, index);
+        deleteFunction(dataAll.allitems.EXP, index);
+        console.log(dataAll);
+
+        //delete child from UI
+        deleteFromUI(elementID);
+    }
+
+
+    else if(data.viewItem().idIndexList['INC'].indexOf(parseInt(elementID)) !== -1){
+        //get index
+        var i, index; 
+        for(i=0; i<(data.viewItem().allitems.INC).length; i++){
+            if(parseInt(data.viewItem().allitems.INC[i].id) == parseInt(elementID)){
+                index = i;
+            }
+        }
+        
+        //Update Budget and Excpense value in UI
+        console.log("Index = "+index);
+        var  dataAll = data.viewItem();
+        
+        dataAll.budget = parseFloat(dataAll.budget) - parseFloat(dataAll.allitems.INC[index].value);
+        dataAll.totalIncome = parseFloat(dataAll.totalIncome) - parseFloat(dataAll.allitems.INC[index].value);
+
+        //delete data from array
+        deleteFunction(dataAll.idIndexList.INC, index);
+        deleteFunction(dataAll.allitems.INC, index);
+        console.log(dataAll);
+
+        //delete child from UI
+        deleteFromUI(elementID);
+    }
+
+    function deleteFunction(arr, elementID){
+        //const index = arr.indexOf(parseInt(elementID));
+        arr.splice(elementID,1);
+        
+    };
+
+    function deleteFromUI(elementID){
+        var element = document.getElementById(elementID);
+        element.parentNode.removeChild(element);
+    };
+
+    document.querySelector(DOMStringsCollection.budgetValueUI).textContent = data.viewItem().budget;
+    document.querySelector(DOMStringsCollection.budgetIncomeValueUI).textContent = data.viewItem().totalIncome;
+    document.querySelector(DOMStringsCollection.budgetExpenseValue).textContent = data.viewItem().totalExpense;
+    document.querySelector(DOMStringsCollection.budgetIncomePercentage).textContent = calPercentage(data.viewItem().totalIncome, +data.viewItem().totalExpense+data.viewItem().totalIncome);
+    document.querySelector(DOMStringsCollection.budgetExpensePercentahe).textContent = calPercentage(data.viewItem().totalExpense, +data.viewItem().totalExpense+data.viewItem().totalIncome);
 
  });
 
